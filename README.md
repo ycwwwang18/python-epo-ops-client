@@ -66,6 +66,7 @@ Currently the Client knows how to issue request for the following services:
 | `image(path, range=1, extension='tiff')`                                      | published-data/images | images    |
 | `number(reference_type, input, output_format)`                                | number-service        | other     |
 | `published_data(reference_type, input, endpoint='biblio', constituents=None)` | published-data        | retrieval |
+| `published_data_retrieval(reference_type, input, format)`                     | published-data        | retrieval |
 | `published_data_search(cql, range_begin=1, range_end=25, constituents=None)`  | published-data/search | search    |
 | `register(reference_type, input, constituents=['biblio'])`                    | register              | other     |
 | `register_search(cql, range_begin=1, range_end=25)`                           | register/search       | other     |
