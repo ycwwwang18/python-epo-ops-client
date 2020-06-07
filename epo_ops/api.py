@@ -86,6 +86,18 @@ class Client(object):
             )
         )
 
+    def published_data_retrieval(
+        self, reference_type, input, format
+    ):
+        return self._service_request(
+            dict(
+                service=self.__published_data_path__,
+                reference_type=reference_type,
+                input=input,
+                format=format,
+            )
+        )
+    
     def published_data_search(
         self, cql, range_begin=1, range_end=25, constituents=None
     ):
@@ -204,6 +216,26 @@ class Client(object):
 
         return u"/".join(filter(None, parts))
 
+    def _make_request_url1(self, info):
+        _input = info.get("input", None)
+        input_format = _input.__class__.__name__.lower() if _input else None
+        
+        parts_pre = [
+            self.__service_url_prefix__,
+            info.get("service", None),
+            info.get("reference_type", None),
+            input_format,
+        ]
+        parts_post = [info.get("format", None)]
+        
+        if info.get("use_get", False):
+            parts = parts_pre + [_input.as_api_input()] + parts_post
+        else:
+            parts = parts_pre + parts_post
+
+        return u"/".join(filter(None, parts))
+        
+    
     # Service requests
     # info: {service, reference_type, input, endpoint, constituents}
     def _service_request(self, info):
@@ -217,6 +249,17 @@ class Client(object):
         url = self._make_request_url(info)
         return self._make_request(url, data)
 
+    def _service_request1(self, info):
+        _input = info["input"]
+        if type(_input) == list:
+            data = "\n".join([i.as_api_input() for i in _input])
+            info["input"] = _input[0]
+        else:
+            data = _input.as_api_input()
+
+        url = self._make_request_url1(info)
+        return self._make_request(url, data)
+    
     # info: {service, constituents}
     def _search_request(self, info, cql, range):
         url = self._make_request_url(info)
